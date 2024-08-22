@@ -8,7 +8,7 @@ public class SnakeGame {
 	JFrame frame = new JFrame();
         frame.setTitle("Jogo da Cobrinha");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1600, 900); // Tamanho da janela
+        frame.setSize(1600, 900); //Isso define o tamanho da janela na tela
         frame.setVisible(true);  // Torna a janela visível
         frame.setLocationRelativeTo(null); // Centraliza a janela na tela
 	}
