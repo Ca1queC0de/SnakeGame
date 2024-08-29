@@ -4,13 +4,17 @@ import javax.swing.JFrame;
 
 public class SnakeGame {
 
-	public static void main(String[] args) {
-	JFrame frame = new JFrame();
+    public static void main(String[] args) {
+        JFrame frame = new JFrame();
         frame.setTitle("Jogo da Cobrinha");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1600, 900); //Isso define o tamanho da janela na tela
-        frame.setVisible(true);  // Torna a janela visível
-        frame.setLocationRelativeTo(null); // Centraliza a janela na tela
-	}
-	
+        frame.setSize(1280, 720); 
+        frame.setLocationRelativeTo(null); 
+        
+        PanelJogo panelJogo = new PanelJogo();
+        frame.add(panelJogo); 
+        
+        frame.pack(); 
+        frame.setVisible(true); 
+    }
 }
