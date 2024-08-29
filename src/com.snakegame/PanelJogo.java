@@ -12,9 +12,15 @@ import javax.swing.Timer;
 
 public class PanelJogo extends JPanel implements ActionListener, KeyListener {
 
-    private final int SEGMENTO_TAMANHO = 25;
-    private final int LARGURA_TABULEIRO = 1600;
-    private final int ALTURA_TABULEIRO = 900;
+    /**
+	 * 
+	 */
+    
+	private static final long serialVersionUID = 1L;
+	
+	private final int SEGMENTO_TAMANHO = 25;
+    private final int LARGURA_TABULEIRO = 1280;
+    private final int ALTURA_TABULEIRO = 720;
     private final int SEGMENTO_MAXIMO = (LARGURA_TABULEIRO * ALTURA_TABULEIRO) / (SEGMENTO_TAMANHO * SEGMENTO_TAMANHO);
 
     private final int[] x = new int[SEGMENTO_MAXIMO];
@@ -25,32 +31,35 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     private boolean moverDireita = true;
     private boolean moverBaixo = false;
     private boolean moverCima = false;
+    
+    private int comidaX;
+    private int comidaY;
 
     private Timer timer;
 
-    // Construtor e Inicialização
     public PanelJogo() {
         setPreferredSize(new Dimension(LARGURA_TABULEIRO, ALTURA_TABULEIRO));
         setBackground(Color.BLACK);
         setFocusable(true);
+        setFocusTraversalKeysEnabled(false); 
         addKeyListener(this);
         iniciarJogo();
     }
 
     private void iniciarJogo() {
-        comprimentoCobra = 3;
+        comprimentoCobra = 7;
 
         for (int i = 0; i < comprimentoCobra; i++) {
             x[i] = 100 - i * SEGMENTO_TAMANHO;
             y[i] = 100;
         }
 
-        timer = new Timer(140, this);
+        timer = new Timer(100, this);
         timer.start();
+        gerarComida();
         requestFocusInWindow();
     }
 
-    // Método de Atualização
     @Override
     public void actionPerformed(ActionEvent e) {
         moverCobra();
@@ -58,13 +67,11 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     }
 
     private void moverCobra() {
-        // Atualiza a posição dos segmentos da cobra
         for (int i = comprimentoCobra - 1; i > 0; i--) {
             x[i] = x[i - 1];
             y[i] = y[i - 1];
         }
 
-        // Atualiza a posição da cabeça da cobra com base na direção
         if (moverEsquerda) {
             x[0] -= SEGMENTO_TAMANHO;
         } else if (moverDireita) {
@@ -74,16 +81,36 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
         } else if (moverBaixo) {
             y[0] += SEGMENTO_TAMANHO;
         }
-        
-        // Mensagem de depuração para verificar a posição da cobra
-        System.out.println("Posição cabeça: (" + x[0] + ", " + y[0] + ")");
-    }
 
-    // Método de Desenho
+        if (x[0] < 0 || x[0] >= LARGURA_TABULEIRO || y[0] < 0 || y[0] >= ALTURA_TABULEIRO) {
+            gameOver();
+        }
+
+        for (int i = comprimentoCobra; i > 0; i--) {
+            if (x[0] == x[i] && y[0] == y[i]) {
+                gameOver();
+            }
+        }
+
+        if (x[0] == comidaX && y[0] == comidaY) {
+            comprimentoCobra++;
+
+            gerarComida();
+        }
+
+        //System.out.println("Posição cabeça: (" + x[0] + ", " + y[0] + ")");
+    }
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         desenharCobra(g);
+        desenharComida(g);
+    }
+    
+    private void desenharComida(Graphics g) {
+        g.setColor(Color.RED);
+        g.fillRect(comidaX, comidaY, SEGMENTO_TAMANHO, SEGMENTO_TAMANHO);
     }
 
     private void desenharCobra(Graphics g) {
@@ -97,41 +124,39 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
         }
     }
 
-    // Métodos de Entrada
     @Override
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         
-        // Verificar as teclas e atualizar a direção da cobra
-        if (key == KeyEvent.VK_A && !moverDireita) { 
+   
+        if (key == KeyEvent.VK_LEFT && !moverDireita) {
             moverEsquerda = true;
             moverDireita = false;
             moverCima = false;
             moverBaixo = false;
-            System.out.println("Movendo para a esquerda");
-        } else if (key == KeyEvent.VK_D && !moverEsquerda) { 
+            //System.out.println("Movendo para a esquerda");
+        } else if (key == KeyEvent.VK_RIGHT && !moverEsquerda) { 
             moverDireita = true;
             moverEsquerda = false;
             moverCima = false;
             moverBaixo = false;
-            System.out.println("Movendo para a direita");
-        } else if (key == KeyEvent.VK_W && !moverBaixo) { 
+            //System.out.println("Movendo para a direita");
+        } else if (key == KeyEvent.VK_UP && !moverBaixo) { 
             moverCima = true;
             moverBaixo = false;
             moverEsquerda = false;
             moverDireita = false;
-            System.out.println("Movendo para cima");
-        } else if (key == KeyEvent.VK_S && !moverCima) {
+            //System.out.println("Movendo para cima");
+        } else if (key == KeyEvent.VK_DOWN && !moverCima) { 
             moverBaixo = true;
             moverCima = false;
             moverEsquerda = false;
             moverDireita = false;
-            System.out.println("Movendo para baixo");
+            //System.out.println("Movendo para baixo");
         }
 
-        // Mensagem de depuração para verificar a tecla pressionada
-        System.out.println("Tecla pressionada: " + KeyEvent.getKeyText(key));
-        System.out.println("Direção: Esquerda=" + moverEsquerda + " Direita=" + moverDireita + " Baixo=" + moverBaixo + " Cima=" + moverCima);
+        /*System.out.println("Tecla pressionada: " + KeyEvent.getKeyText(key));
+        System.out.println("Direção: Esquerda=" + moverEsquerda + " Direita=" + moverDireita + " Baixo=" + moverBaixo + " Cima=" + moverCima);*/
     }
 
     @Override
@@ -143,4 +168,57 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     public void keyTyped(KeyEvent e) {
 
     }
+    
+    private void gerarComida() {
+        int posicaoAleatoria = (int) (Math.random() * (LARGURA_TABULEIRO / SEGMENTO_TAMANHO)) * SEGMENTO_TAMANHO;
+        comidaX = posicaoAleatoria;
+        posicaoAleatoria = (int) (Math.random() * (ALTURA_TABULEIRO / SEGMENTO_TAMANHO)) * SEGMENTO_TAMANHO;
+        comidaY = posicaoAleatoria;
+    }
+    
+    private void gameOver() {
+        timer.stop();
+        System.out.println("Game Over!");
+        
+        System.out.println("Pressione 'R' para reiniciar o jogo.");
+
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                int key = e.getKeyCode();
+                if (key == KeyEvent.VK_R) {
+                    reiniciarJogo();
+                    removeKeyListener(this);
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+
+            }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+
+            }
+        });
+    }
+
+
+    private void reiniciarJogo() {
+        comprimentoCobra = 3;
+
+        for (int i = 0; i < comprimentoCobra; i++) {
+            x[i] = 100 - i * SEGMENTO_TAMANHO;
+            y[i] = 100;
+        }
+
+        moverEsquerda = false;
+        moverDireita = true;
+        moverBaixo = false;
+        moverCima = false;
+
+        timer.restart();
+    }
+
 }
