@@ -30,6 +30,7 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     private boolean moverDireita = true;
     private boolean moverBaixo = false;
     private boolean moverCima = false;
+    private boolean emPausa = false;
     
     private int comidaX;
     private int comidaY;
@@ -64,8 +65,10 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        moverCobra();
-        repaint();
+        if (!emPausa) {
+            moverCobra();
+            repaint();
+        }
     }
 
     private void moverCobra() {
@@ -137,35 +140,44 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         
+        if (key == KeyEvent.VK_P) {
+            emPausa = !emPausa;
+            System.out.println(emPausa ? "Joso pausado" : "Jogo retomado");
+        }
    
-        if (key == KeyEvent.VK_LEFT && !moverDireita) {
-            moverEsquerda = true;
-            moverDireita = false;
-            moverCima = false;
-            moverBaixo = false;
-            //System.out.println("Movendo para a esquerda");
-        } else if (key == KeyEvent.VK_RIGHT && !moverEsquerda) { 
-            moverDireita = true;
-            moverEsquerda = false;
-            moverCima = false;
-            moverBaixo = false;
-            //System.out.println("Movendo para a direita");
-        } else if (key == KeyEvent.VK_UP && !moverBaixo) { 
-            moverCima = true;
-            moverBaixo = false;
-            moverEsquerda = false;
-            moverDireita = false;
-            //System.out.println("Movendo para cima");
-        } else if (key == KeyEvent.VK_DOWN && !moverCima) { 
-            moverBaixo = true;
-            moverCima = false;
-            moverEsquerda = false;
-            moverDireita = false;
-            //System.out.println("Movendo para baixo");
+        if (!emPausa) {
+           
+            if (key == KeyEvent.VK_LEFT && !moverDireita) {
+                moverEsquerda = true;
+                moverDireita = false;
+                moverCima = false;
+                moverBaixo = false;
+                //System.out.println("Movendo para a esquerda");
+            } else if (key == KeyEvent.VK_RIGHT && !moverEsquerda) { 
+                moverDireita = true;
+                moverEsquerda = false;
+                moverCima = false;
+                moverBaixo = false;
+                //System.out.println("Movendo para a direita");
+            } else if (key == KeyEvent.VK_UP && !moverBaixo) { 
+                moverCima = true;
+                moverBaixo = false;
+                moverEsquerda = false;
+                moverDireita = false;
+                //System.out.println("Movendo para cima");
+            } else if (key == KeyEvent.VK_DOWN && !moverCima) { 
+                moverBaixo = true;
+                moverCima = false;
+                moverEsquerda = false;
+                moverDireita = false;
+                //System.out.println("Movendo para baixo");
+            }
+
+            /*System.out.println("Tecla pressionada: " + KeyEvent.getKeyText(key));
+            System.out.println("Direção: Esquerda=" + moverEsquerda + " Direita=" + moverDireita + " Baixo=" + moverBaixo + " Cima=" + moverCima);*/ 
         }
 
-        /*System.out.println("Tecla pressionada: " + KeyEvent.getKeyText(key));
-        System.out.println("Direção: Esquerda=" + moverEsquerda + " Direita=" + moverDireita + " Baixo=" + moverBaixo + " Cima=" + moverCima);*/
+        
     }
 
     @Override
@@ -186,6 +198,7 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     }
     
     private void gameOver() {
+        
         timer.stop();
         System.out.println("Game Over!");
         
@@ -196,6 +209,7 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
             public void keyPressed(KeyEvent e) {
                 int key = e.getKeyCode();
                 if (key == KeyEvent.VK_R) {
+                    pontuacao = 0;
                     reiniciarJogo();
                     removeKeyListener(this);
                 }
