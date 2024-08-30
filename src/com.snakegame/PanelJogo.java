@@ -15,7 +15,6 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     /**
 	 * 
 	 */
-    
 	private static final long serialVersionUID = 1L;
 	
 	private final int SEGMENTO_TAMANHO = 25;
@@ -35,6 +34,8 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     private int comidaX;
     private int comidaY;
 
+    private int pontuacao;
+
     private Timer timer;
 
     public PanelJogo() {
@@ -47,7 +48,8 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     }
 
     private void iniciarJogo() {
-        comprimentoCobra = 7;
+        comprimentoCobra = 3;
+        pontuacao = 0;
 
         for (int i = 0; i < comprimentoCobra; i++) {
             x[i] = 100 - i * SEGMENTO_TAMANHO;
@@ -87,16 +89,17 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
         }
 
         for (int i = comprimentoCobra; i > 0; i--) {
-            if (x[0] == x[i] && y[0] == y[i]) {
+            if (x[0] == x[i] && y[0]     == y[i]) {
                 gameOver();
             }
         }
 
         if (x[0] == comidaX && y[0] == comidaY) {
             comprimentoCobra++;
-
+            pontuacao += 100;
             gerarComida();
         }
+        
 
         //System.out.println("Posição cabeça: (" + x[0] + ", " + y[0] + ")");
     }
@@ -106,6 +109,7 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
         super.paintComponent(g);
         desenharCobra(g);
         desenharComida(g);
+        desenharPontuacao(g);
     }
     
     private void desenharComida(Graphics g) {
@@ -122,6 +126,11 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
             }
             g.fillRect(x[i], y[i], SEGMENTO_TAMANHO, SEGMENTO_TAMANHO);
         }
+    }
+
+    private void desenharPontuacao(Graphics g) {
+        g.setColor(Color.WHITE);
+        g.drawString("Pontuação: " + pontuacao, 10, 10);  
     }
 
     @Override
