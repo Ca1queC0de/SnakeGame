@@ -18,9 +18,12 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
 	private static final long serialVersionUID = 1L;
 	
 	private final int SEGMENTO_TAMANHO = 25;
-    private final int LARGURA_TABULEIRO = 1280;
-    private final int ALTURA_TABULEIRO = 720;
+    private final int LARGURA_TABULEIRO = 500;
+    private final int ALTURA_TABULEIRO = 500;
     private final int SEGMENTO_MAXIMO = (LARGURA_TABULEIRO * ALTURA_TABULEIRO) / (SEGMENTO_TAMANHO * SEGMENTO_TAMANHO);
+
+    private final int VELOCIDADE_NORMAL = 100;
+    private final int VELOCIDADE_ACELERADA = 50;
 
     private final int[] x = new int[SEGMENTO_MAXIMO];
     private final int[] y = new int[SEGMENTO_MAXIMO];
@@ -41,7 +44,7 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
 
     public PanelJogo() {
         setPreferredSize(new Dimension(LARGURA_TABULEIRO, ALTURA_TABULEIRO));
-        setBackground(Color.BLACK);
+        setBackground(Color.DARK_GRAY);
         setFocusable(true);
         setFocusTraversalKeysEnabled(false); 
         addKeyListener(this);
@@ -57,7 +60,7 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
             y[i] = 100;
         }
 
-        timer = new Timer(100, this);
+        timer = new Timer(VELOCIDADE_NORMAL, this);
         timer.start();
         gerarComida();
         requestFocusInWindow();
@@ -123,7 +126,7 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     private void desenharCobra(Graphics g) {
         for (int i = 0; i < comprimentoCobra; i++) {
             if (i == 0) {
-                g.setColor(Color.GREEN);
+                g.setColor(Color.ORANGE);
             } else {
                 g.setColor(Color.YELLOW);
             }
@@ -140,6 +143,10 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     public void keyPressed(KeyEvent e) {
         int key = e.getKeyCode();
         
+        if (key == KeyEvent.VK_SPACE) {
+            timer.setDelay(VELOCIDADE_ACELERADA);
+        }
+
         if (key == KeyEvent.VK_P) {
             emPausa = !emPausa;
             System.out.println(emPausa ? "Joso pausado" : "Jogo retomado");
@@ -182,7 +189,11 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+        int key = e.getKeyCode();
 
+        if (key == KeyEvent.VK_SPACE) {
+            timer.setDelay(VELOCIDADE_NORMAL);
+        }
     }
 
     @Override
