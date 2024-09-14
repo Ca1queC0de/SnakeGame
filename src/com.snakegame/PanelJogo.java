@@ -15,9 +15,9 @@ public class PanelJogo extends JPanel implements ActionListener, KeyListener {
     /**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 	
-	private final int SEGMENTO_TAMANHO = 25;
+    private final int SEGMENTO_TAMANHO = 25;
     private final int LARGURA_TABULEIRO = 500;
     private final int ALTURA_TABULEIRO = 500;
     private final int SEGMENTO_MAXIMO = (LARGURA_TABULEIRO * ALTURA_TABULEIRO) / (SEGMENTO_TAMANHO * SEGMENTO_TAMANHO);
